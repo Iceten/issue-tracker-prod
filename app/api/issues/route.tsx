@@ -28,3 +28,12 @@ export async function POST(request: NextRequest) {
   //Return Response with Status
   return NextResponse.json(newIssue, { status: 201 });
 }
+
+export async function GET(request: NextRequest){
+ 
+  const issues = await prisma.issue.findMany()
+
+  if(!issues) return NextResponse.json({error:'No issue available'}, {status: 400})
+
+  return NextResponse.json(issues, {status:200})
+}
