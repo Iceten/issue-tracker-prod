@@ -12,8 +12,6 @@ const NavBar = () => {
     { label: "Issues", href: "/issues" },
   ];
 
-  console.log(currentPage);
-
   return (
     <nav className="flex space-x-6 border-b mb-5 h-14 items-center px-5">
       <Link href="/">
