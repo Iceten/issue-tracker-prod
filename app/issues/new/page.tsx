@@ -11,6 +11,7 @@ import "easymde/dist/easymde.min.css";
 import { Button, Callout,Text,TextField } from "@radix-ui/themes";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { createIssueSchema } from "@/app/validationSchemas";
+import ErrorMessage from "@/app/components/ErrorMessage";
 
 
 type IssueForm = z.infer<typeof createIssueSchema>
@@ -48,7 +49,7 @@ const NewIssuePage = () => {
           {...register("title")}
         ></TextField.Input>
       </TextField.Root>
-      {errors.title && <Text color="red" as="p">{errors.title.message}</Text>}
+      {<ErrorMessage>{errors.title?.message}</ErrorMessage>}
 
       <Controller
         name="description"
@@ -57,7 +58,7 @@ const NewIssuePage = () => {
           <SimpleMDE placeholder="Description" {...field} />
         )}
       />
-      {errors.description && <Text color="red" as="p">{errors.description.message}</Text>}
+      {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
 
       <Button>Submit new Issue</Button>
     </form>
