@@ -1,13 +1,13 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 
-import { TextField } from "@radix-ui/themes";
-import { Button } from "@radix-ui/themes";
+import { Button, Callout,TextField } from "@radix-ui/themes";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 interface IssueForm {
   title: "string";
@@ -15,17 +15,30 @@ interface IssueForm {
 }
 
 const NewIssuePage = () => {
+  const [clientError, setClientError] = useState('')
   const router = useRouter();
   const { register, control, handleSubmit } = useForm<IssueForm>();
 
-  console.log(register("title"));
   return (
-    <form
-      className="max-w-xl space-y-3"
+    <div className="max-w-xl space-y-3">
+      { clientError && <Callout.Root>
+        <Callout.Icon >
+          <ExclamationTriangleIcon color='tomato'/>
+        </Callout.Icon>
+        <Callout.Text>{clientError}</Callout.Text>
+      </Callout.Root>}
+      
+      <form
+      className="space-y-3"
       {...register}
       onSubmit={handleSubmit(async (data) => {
-        await axios.post("/api/issues", data);
-        router.push("/issues");
+        try {
+          await axios.post("/api/issues", data);
+          router.push("/issues");  
+        } catch (error) {
+          setClientError('An unexpected error occured')
+        }
+        
       })}
     >
       <TextField.Root>
@@ -45,7 +58,9 @@ const NewIssuePage = () => {
 
       <Button>Submit new Issue</Button>
     </form>
-  );
+
+    </div>
+      );
 };
 
 export default NewIssuePage;
