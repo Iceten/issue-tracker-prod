@@ -12,12 +12,14 @@ import { Button, Callout,Text,TextField } from "@radix-ui/themes";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { createIssueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from './../../components/Spinner';
 
 
 type IssueForm = z.infer<typeof createIssueSchema>
 
 const NewIssuePage = () => {
   const [clientError, setClientError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter();
   const { register, control, handleSubmit, formState: {errors} } = useForm<IssueForm>({resolver: zodResolver(createIssueSchema)});
 
@@ -35,10 +37,13 @@ const NewIssuePage = () => {
       {...register}
       onSubmit={handleSubmit(async (data) => {
         try {
+          setIsSubmitting(true)
           await axios.post("/api/issues", data);
           router.push("/issues");  
+
         } catch (error) {
           setClientError('An unexpected error occured')
+          setIsSubmitting(false)
         }
         
       })}
@@ -60,7 +65,7 @@ const NewIssuePage = () => {
       />
       {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
 
-      <Button>Submit new Issue</Button>
+      <Button disabled={isSubmitting}>Submit new Issue {isSubmitting && <Spinner/>}</Button>
     </form>
 
     </div>
