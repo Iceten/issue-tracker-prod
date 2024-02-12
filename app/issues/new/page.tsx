@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 
-import { Button, Callout,Text,TextField } from "@radix-ui/themes";
+import { Button, Callout,TextField } from "@radix-ui/themes";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { createIssueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/components/ErrorMessage";
@@ -23,6 +23,18 @@ const NewIssuePage = () => {
   const router = useRouter();
   const { register, control, handleSubmit, formState: {errors} } = useForm<IssueForm>({resolver: zodResolver(createIssueSchema)});
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setIsSubmitting(true)
+      await axios.post("/api/issues", data);
+      router.push("/issues");  
+
+    } catch (error) {
+      setClientError('An unexpected error occured')
+      setIsSubmitting(false)
+    }
+  })
+
   return (
     <div className="max-w-xl space-y-3">
       { clientError && <Callout.Root>
@@ -35,18 +47,7 @@ const NewIssuePage = () => {
       <form
       className="space-y-3"
       {...register}
-      onSubmit={handleSubmit(async (data) => {
-        try {
-          setIsSubmitting(true)
-          await axios.post("/api/issues", data);
-          router.push("/issues");  
-
-        } catch (error) {
-          setClientError('An unexpected error occured')
-          setIsSubmitting(false)
-        }
-        
-      })}
+      onSubmit={onSubmit}
     >
       <TextField.Root>
         <TextField.Input
