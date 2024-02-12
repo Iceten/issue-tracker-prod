@@ -1,18 +1,19 @@
 "use client";
-import React, {useState} from "react";
-import { useForm, Controller } from "react-hook-form";
-import {zodResolver} from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import axios from "axios";
-import { z } from 'zod';
-import { useRouter } from "next/navigation";
-import dynamic from 'next/dynamic'
 import "easymde/dist/easymde.min.css";
+import dynamic from 'next/dynamic';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from 'zod';
 
-import { Button, Callout,TextField } from "@radix-ui/themes";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { createIssueSchema } from "@/app/validationSchemas";
-import ErrorMessage from "@/app/components/ErrorMessage";
-import Spinner from './../../components/Spinner';
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Button, Callout, TextField } from "@radix-ui/themes";
+
+import { ErrorMessage, Spinner } from '@/app/components';
+
 
 type IssueForm = z.infer<typeof createIssueSchema>
 
