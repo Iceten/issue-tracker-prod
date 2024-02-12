@@ -5,7 +5,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import axios from "axios";
 import { z } from 'zod';
 import { useRouter } from "next/navigation";
-import SimpleMDE from "react-simplemde-editor";
+import dynamic from 'next/dynamic'
 import "easymde/dist/easymde.min.css";
 
 import { Button, Callout,TextField } from "@radix-ui/themes";
@@ -14,10 +14,13 @@ import { createIssueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from './../../components/Spinner';
 
-import delay from 'delay'
-
-
 type IssueForm = z.infer<typeof createIssueSchema>
+
+
+const SimpleMDE = dynamic(
+  ()=> import("react-simplemde-editor"),
+  {ssr:false}
+)
 
 const NewIssuePage = () => {
   const [clientError, setClientError] = useState('')
