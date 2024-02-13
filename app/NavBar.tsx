@@ -8,7 +8,7 @@ const NavBar = () => {
   const currentPage = usePathname();
   const links = [
     { label: "DashBoard", href: "/" },
-    { label: "Issues", href: "/issues" },
+    { label: "Issues", href: "/issues/list" },
   ];
 
   return (
