@@ -14,15 +14,9 @@ import { Button, Callout, TextField } from "@radix-ui/themes";
 
 import { ErrorMessage, Spinner } from '@/app/components';
 import { Issue } from '@prisma/client';
-
+import SimpleMDE from 'react-simplemde-editor'
 
 type IssueFormData = z.infer<typeof issueSchema>
-
-
-const SimpleMDE = dynamic(
-  ()=> import("react-simplemde-editor"),
-  {ssr:false}
-)
 
 interface Props{
     issue?: Issue
