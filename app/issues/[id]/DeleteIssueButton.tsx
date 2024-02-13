@@ -24,9 +24,7 @@ const DeleteIssueButton = ({issueId} : {issueId : number}) => {
           </AlertDialog.Action>
         </Flex>
       </AlertDialog.Content>
-     
-
-    </AlertDialog.Root>
+      </AlertDialog.Root>
   )
 }
 
