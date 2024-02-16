@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillBug } from "react-icons/ai";
 import {useSession} from 'next-auth/react'
+import { Skeleton } from "./components";
 
 const NavBar = () => {
 
@@ -56,7 +57,7 @@ const AuthStatus = ()=>{
   const {status, data:session} = useSession()
   
   if(status === "loading")
-    return null;
+    return <Skeleton width="3rem"/>;
 
   if(status === "unauthenticated")
   return <Box><Link className="nav-link" href='/api/auth/signin'>Login</Link></Box>
