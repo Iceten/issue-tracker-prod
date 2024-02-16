@@ -1,9 +1,17 @@
+import authOptions from '@/app/auth/authOptions'
 import { issueSchema } from '@/app/validationSchemas'
-import {NextRequest, NextResponse} from 'next/server'
 import prisma from '@/prisma/client'
-import delay from 'delay'
+import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function PATCH(request: NextRequest, {params}:{params: {id:string}}){
+
+    //Check session of user
+    const session = await getServerSession(authOptions)
+
+  if(!session) 
+    return NextResponse.json({},{status:401})
+
     //Receive Request  - Update Data - Return Response  
     const body = await request.json()
 
@@ -35,6 +43,11 @@ export async function PATCH(request: NextRequest, {params}:{params: {id:string}}
 }
 
 export async function DELETE(request: NextRequest, {params} : {params: {id:string}}){
+    //Check user session
+    const session = await getServerSession(authOptions)
+
+  if(!session) 
+    return NextResponse.json({},{status:401})
     //Fetch issue from DB
     const issue = await prisma.issue.findUnique({
         where:{
