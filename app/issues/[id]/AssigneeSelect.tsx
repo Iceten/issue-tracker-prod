@@ -1,41 +1,49 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import {Select} from '@radix-ui/themes'
-import { User } from '@prisma/client'
-import axios from 'axios'
-import {useQuery} from '@tanstack/react-query';
-import {Skeleton} from '@/app/components'
+"use client";
+import React from "react";
+import { Select } from "@radix-ui/themes";
+import { Issue, User } from "@prisma/client";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/app/components";
 
-const AssigneeSelect = () => {
-    const {data:users, error, isLoading} = useQuery<User[]>({
-        queryKey:['users'],
-        queryFn: ()=> axios.get('/api/users').then(res => res.data),
-        staleTime: 60*1000,
-        retry:3
-    })
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
+  const {
+    data: users,
+    error,
+    isLoading,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    staleTime: 60 * 1000,
+    retry: 3,
+  });
 
-    if(isLoading) return <Skeleton></Skeleton>
+  if (isLoading) return <Skeleton></Skeleton>;
 
-    if(error) return null
+  if (error) return null;
   return (
-   <Select.Root>        
-    <Select.Trigger/>
-       <Select.Content>
-           <Select.Group>
-               <Select.Label>Suggestions</Select.Label>
-               {users?.map((user) => (
-               <Select.Item 
-                    key={user.id}
-                    value={user.id}>
-                        {user.name}
-               </Select.Item>)
-               )}
-               
-           </Select.Group>
-       </Select.Content>
-   </Select.Root>
+    <Select.Root
+      onValueChange={(userId) => {
+        axios.patch("/api/issues/" + issue.id, {
+          assignedToUserId: userId || null,
+        });
+      }}
+      defaultValue={issue.assignedToUserId || ""}
+    >
+      <Select.Trigger />
+      <Select.Content>
+        <Select.Group>
+          <Select.Label>Suggestions</Select.Label>
+          <Select.Item value="">Unassigned</Select.Item>
+          {users?.map((user) => (
+            <Select.Item key={user.id} value={user.id}>
+              {user.name}
+            </Select.Item>
+          ))}
+        </Select.Group>
+      </Select.Content>
+    </Select.Root>
+  );
+};
 
-  )
-}
-
-export default AssigneeSelect
+export default AssigneeSelect;
