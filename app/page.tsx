@@ -1,16 +1,47 @@
 import Image from "next/image";
 import Pagination from "./components/Pagination";
+import { Flex, Table, Avatar, Card, Heading } from "@radix-ui/themes";
+import Link from "next/link";
+import prisma from "@/prisma/client";
+import { IssueStatusBadge } from "./components";
 
-export default function Home({
-  searchParams,
-}: {
-  searchParams: { page: string };
-}) {
+export default async function Home() {
+  const issues = await prisma.issue.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    include: {
+      assignedToUser: true,
+    },
+  });
   return (
-    <Pagination
-      itemCount={100}
-      pageSize={10}
-      currentPage={parseInt(searchParams.page)}
-    />
+    <Card>
+      <Heading size="4" mb="5">
+        Latest Issues
+      </Heading>
+      <Table.Root>
+        <Table.Body>
+          {issues.map((issue) => (
+            <Table.Row key={issue.id}>
+              <Table.Cell>
+                <Flex justify="between">
+                  <Flex direction="column" gap="2" align="start">
+                    <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
+                    <IssueStatusBadge status={issue.status} />
+                  </Flex>
+                  {issue.assignedToUser && (
+                    <Avatar
+                      radius="full"
+                      src={issue.assignedToUser.image!}
+                      fallback="?"
+                      size="2"
+                    />
+                  )}
+                </Flex>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
+    </Card>
   );
 }
