@@ -46,4 +46,5 @@ export async function generateMetadata({params}: {params: {id:string}}){
   }
 }
 
+
 export default IssueDetailPage;
